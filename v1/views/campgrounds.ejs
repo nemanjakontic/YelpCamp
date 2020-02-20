@@ -1,9 +1,11 @@
-<h1>campgdfsofkdsfsd</h1>
-<% campgrounds.forEach(function(camp){ %>
-    <div>
-        <h4>
-            <%= camp.name %>
-        </h4>
-        <img src="<%= camp.image %>" alt="">
-    </div>
-    <%});%>
+<%- include("partials/header") %>
+    <h1>campgdfsofkdsfsd</h1>
+    <% campgrounds.forEach(function(camp){ %>
+        <div>
+            <h4>
+                <%= camp.name %>
+            </h4>
+            <img src="<%= camp.image %>" alt="">
+        </div>
+        <%});%>
+            <%- include("partials/footer") %>
