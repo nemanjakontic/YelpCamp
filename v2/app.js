@@ -15,14 +15,16 @@ mongoose.connect("mongodb://localhost/yelp_camp");
 
 var campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema);
 
 /*Campground.create({
     name: "Granitte hill",
-    image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+    image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
+    description: "This is the hude fhgfgjfd f fdg dfgdfgfdgfgdf fg fdgdfgdfg fdg fdgdf gdfg fdgfdfdgdf fdg fd fd d"
 }, function(err, campground) {
     if (err) {
         console.log("Greskaaaa");
@@ -49,25 +51,29 @@ app.get("/", function(req, res) {
     res.render("landing");
 });
 
+//INDEX
 app.get("/campgrounds", function(req, res) {
     //res.render("campgrounds", { campgrounds: campgrounds });
     Campground.find({}, function(err, allCampgrounds) {
         if (err) {
             console.log("greska");
         } else {
-            res.render("campgrounds", { campgrounds: allCampgrounds });
+            res.render("index", { campgrounds: allCampgrounds });
         }
     });
 });
 
+//CREATE
 app.get("/campgrounds/new", function(req, res) {
     res.render("new.ejs");
 });
 
+//NEW
 app.post("/campgrounds", function(req, res) {
     var name = req.body.name;
     var image = req.body.image;
-    var newCamp = { name: name, image: image };
+    var description = req.body.description;
+    var newCamp = { name: name, image: image, description: description };
     //campgrounds.push(newCamp);
     Campground.create(newCamp, function(err, newly) {
         if (err) {
@@ -77,6 +83,20 @@ app.post("/campgrounds", function(req, res) {
         }
     });
 
+});
+
+
+//SHOW
+app.get("/campgrounds/:id", function(req, res) {
+    //res.send("SHOW");
+    //var id = req.params.id;
+    Campground.findById(req.params.id, function(err, camp) {
+        if (err) {
+            console.log("greska");
+        } else {
+            res.render("show", { campground: camp });
+        }
+    });
 });
 
 var port = process.env.PORT || 3000;
