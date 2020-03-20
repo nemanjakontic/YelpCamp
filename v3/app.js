@@ -2,6 +2,8 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+var Campground = require("./models/campgrounds");
+var seedDB = require("./seeds")
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -11,39 +13,8 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-mongoose.connect("mongodb://localhost/yelp_camp");
-
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
-
-/*Campground.create({
-    name: "Granitte hill",
-    image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
-    description: "This is the hude fhgfgjfd f fdg dfgdfgfdgfgdf fg fdgdfgdfg fdg fdgdf gdfg fdgfdfdgdf fdg fd fd d"
-}, function(err, campground) {
-    if (err) {
-        console.log("Greskaaaa");
-    } else {
-        console.log("New campground: ");
-        console.log(campground);
-    }
-});*/
-
-var campgrounds = [
-    { name: "Salmon Creek", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Granite Hill", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Monutain", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Salmon Creek", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Granite Hill", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Monutain", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Salmon Creek", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" },
-    { name: "Granite Hill", image: "https://images.unsplash.com/photo-1582032224511-d6a8a1d21c0a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" }
-];
+seedDB();
+mongoose.connect("mongodb://localhost/yelp_camp_v3");
 
 ////////////////////////////////////////////////////////////////
 
@@ -90,7 +61,7 @@ app.post("/campgrounds", function(req, res) {
 app.get("/campgrounds/:id", function(req, res) {
     //res.send("SHOW");
     //var id = req.params.id;
-    Campground.findById(req.params.id, function(err, camp) {
+    Campground.findById(req.params.id).populate("comments").exec(function(err, camp) {
         if (err) {
             console.log("greska");
         } else {
